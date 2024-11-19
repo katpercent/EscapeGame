@@ -55,13 +55,15 @@ class ElementChallengeNumCode {
         std::vector<std::vector<float>> corner;
         std::string input;
         std::string output;
-        ElementChallengeNumCode(int arg1, int arg2, std::vector<float> arg3, std::vector<float> arg4, std::string arg5 = "", std::string arg6 = "-1") {
+		std::string img;
+        ElementChallengeNumCode(int arg1, int arg2, std::vector<float> arg3, std::vector<float> arg4, std::string arg5 = "", std::string arg6 = "-1", std::string arg7 = "") {
             numInput = arg1;
             numOutput = arg2;
             center = arg3;
             size = arg4;
             input = arg5;
             output = arg6;
+			img = arg7;
             corner.push_back({this->center[0] - this->size[0]/2, this->center[1] + this->size[1]/2});
             corner.push_back({this->center[0] + this->size[0]/2, this->center[1] + this->size[1]/2});
             corner.push_back({this->center[0] + this->size[0]/2, this->center[1] - this->size[1]/2});
@@ -69,16 +71,36 @@ class ElementChallengeNumCode {
         }
 };
 
-std::vector<ElementChallengeNumCode> ChallengeNumCode(std::vector<Tile> tileList, int tilenum, int paddingy, int paddingx, int spaceBlock) {
-    std::vector<ElementChallengeNumCode> ElementList;
+class ChallengeNumCode {
+	public:
+		std::vector<ElementChallengeNumCode> vect;
+};
+
+ChallengeNumCode ChallengeCode(Tile tile, int paddingy, int paddingx, int spaceBlock) {
+    ChallengeNumCode ElementList;
+	std::vector<ElementChallengeNumCode> vect;
     std::vector<float> center;
-    std::vector<float> size = {tileList[tilenum].size[0] - tileList[tilenum].size[0]/9, tileList[tilenum].size[1] - tileList[tilenum].size[1]/9};
-    Tile tempTile = Tile(-1, tileList[tilenum].center, size);
-    ElementList.push_back(ElementChallengeNumCode(10, -1, temptile.center, size));
-    for (int k = 1; k < 10; k++){
-        ElementList.push_back(ElementChallengeNumCode(-1, 10, ));
-    }
-    return 1;
+    std::vector<float> size = {tile.size[0] - tile.size[0]/9, tile.size[1] - tile.size[1]/9};
+    Tile tempTile(-1, 0, tile.center, size);
+    ElementList.vect.push_back(ElementChallengeNumCode(10, -1, tempTile.center, size, "", ""));
+    ElementList.vect.push_back(ElementChallengeNumCode(-1, 10, tempTile.center, size, "", "1"));
+    ElementList.vect.push_back(ElementChallengeNumCode(-1, 10, tempTile.center, size, "", "2"));
+    ElementList.vect.push_back(ElementChallengeNumCode(-1, 10, tempTile.center, size, "", "3"));
+    ElementList.vect.push_back(ElementChallengeNumCode(-1, 10, tempTile.center, size, "", "4"));
+    ElementList.vect.push_back(ElementChallengeNumCode(-1, 10, tempTile.center, size, "", "5"));
+    ElementList.vect.push_back(ElementChallengeNumCode(-1, 10, tempTile.center, size, "", "6"));
+    ElementList.vect.push_back(ElementChallengeNumCode(-1, 10, tempTile.center, size, "", "7"));
+    ElementList.vect.push_back(ElementChallengeNumCode(-1, 10, tempTile.center, size, "", "8"));
+    ElementList.vect.push_back(ElementChallengeNumCode(-1, 10, tempTile.center, size, "", "9"));
+    ElementList.vect.push_back(ElementChallengeNumCode(-1, 10, tempTile.center, size, "", "0"));
+    /* CORE DUMPED Problem (fix after the delay) 
+	 * for (int k = 1; k < 10; k++){
+        std::string s = std::to_string(k);
+		char const *pchar = s.c_str();  //use char const* as target type
+		std::string lol;
+		ElementList.vect.push_back(ElementChallengeNumCode(-1, 10, center, size, lol, pchar));
+    }*/
+    return ElementList;
 }
 
 /*int
@@ -92,6 +114,11 @@ int mouseInTile(std::map<int, std::map<std::string, std::map<std::string, int>>>
     }
     return -1;
 }*/
+
+class Games {
+	public:
+		std::vector<std::pair<Tile, void*>> vec;
+};
 
 int main(int args, char *argv[]) {
     int mx, my;
@@ -132,6 +159,8 @@ int main(int args, char *argv[]) {
     //std::map<int, std::map<std::string, std::map<std::string, float>>> tile = {};
     //tile[0] = {{"center", {{"x",width/2}, {"y",height/2}}}, {"size", {{"x", width - 200}, {"y", height - 200}}}};
     
+	Games games;	
+
     std::vector<float> center;
     std::vector<float> size;
 
@@ -159,9 +188,20 @@ int main(int args, char *argv[]) {
         std::uniform_int_distribution<> distrib(min, max);
         int randomValue = distrib(gen);
         Tile temptile(i+1, ChallengeAttr[randomValue], center, size);
+		Tiles.push_back(temptile);
+		if (temptile.challengeCode == 0){ 
+			ChallengeNumCode init = ChallengeCode(temptile, 30, 30, 30);
+			games.vec.push_back({Tiles[i+1], reinterpret_cast<void*>(&init)});
+		}
+		/*if else (ChallengeAttr[randomValue] == 1){ games.add(temptile, ChallengeCode(temptile, 30, 30, 30)); }
+		if else (ChallengeAttr[randomValue] == 2){ games.add(temptile, ChallengeCode(temptile, 30, 30, 30)); }
+		if else (ChallengeAttr[randomValue] == 3){ games.add(temptile, ChallengeCode(temptile, 30, 30, 30)); }
+		if else (ChallengeAttr[randomValue] == 4){ games.add(temptile, ChallengeCode(temptile, 30, 30, 30)); }
+		if else (ChallengeAttr[randomValue] == 5){ games.add(temptile, ChallengeCode(temptile, 30, 30, 30)); }
+		if else (ChallengeAttr[randomValue] == 6){ games.add(temptile, ChallengeCode(temptile, 30, 30, 30)); }
+		if else (ChallengeAttr[randomValue] == 7){ games.add(temptile, ChallengeCode(temptile, 30, 30, 30)); }
+		if else (ChallengeAttr[randomValue] == 8){ games.add(temptile, ChallengeCode(temptile, 30, 30, 30)); }*/
         ChallengeAttr.erase(ChallengeAttr.begin() + randomValue);
-        Tiles.push_back(temptile);
-        //tile[i+1] = {{"center", {{"x", (tile[0]["dl"]["x"] + (tile[0]["size"]["x"] / (numTiles * 2)) * (x+1+x)) }, {"y", tile[0]["dl"]["y"] + (tile[0]["size"]["y"] / (numTiles * 2)) * (y+1+y) }}}, {"size", {{"x", tile[0]["size"]["x"]/numTiles}, {"y",tile[0]["size"]["y"]/numTiles}}}};
     }
 
     while(!slShouldClose() && !slGetKey(SL_KEY_ESCAPE))
@@ -173,7 +213,6 @@ int main(int args, char *argv[]) {
         //slRectangleOutline(width/2, height/2, width - 200, height - 200);
         slSetForeColor(0.3, 0.3, 0.3, 1.0);
         for (int k = 0; k < 10; k++) {
-            //slRectangleOutline(tile[k]["center"]["x"], tile[k]["center"]["y"], tile[k]["size"]["x"], tile[k]["size"]["y"]);
             slRectangleOutline(Tiles[k].center[0], Tiles[k].center[1], Tiles[k].size[0], Tiles[k].size[1]);
             std::string s = std::to_string(Tiles[k].challengeCode);
             char const *pchar = s.c_str();  //use char const* as target type
@@ -181,6 +220,12 @@ int main(int args, char *argv[]) {
                 slText(Tiles[k].center[0], Tiles[k].center[1], pchar);
             }
         }
+		
+		printf("%d ", games.vec.size());
+
+		for (int m = 0; m < games.vec.size(); m++){
+			games.vec[m][1];// test
+		}
 
         if (slGetMouseButton(SL_MOUSE_BUTTON_LEFT)) {   
             for (int v = 1;v < numberTiles*numberTiles; v++) {
